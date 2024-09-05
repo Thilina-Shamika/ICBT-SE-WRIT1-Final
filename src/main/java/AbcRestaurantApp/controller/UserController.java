@@ -30,6 +30,7 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @DeleteMapping("/user/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id){
         try {
             userService.deleteUser(id);
