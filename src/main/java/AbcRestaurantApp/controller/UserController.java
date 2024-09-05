@@ -40,4 +40,19 @@ public class UserController {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable Long id){
+        User user = userService.getUserById(id);
+        if (user== null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(user);
+    }
+
+    @PutMapping("/user/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User user){
+        User updatedUser = userService.updateUser(id, user);
+
+        if (updatedUser == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.ok(updatedUser);
+    }
 }
