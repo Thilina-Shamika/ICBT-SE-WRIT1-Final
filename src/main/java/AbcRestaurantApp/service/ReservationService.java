@@ -2,6 +2,7 @@ package AbcRestaurantApp.service;
 
 import AbcRestaurantApp.entity.Reservation;
 import AbcRestaurantApp.repository.ReservationRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Request;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,5 +25,12 @@ public class ReservationService {
 
     public List<Reservation> getAllReservations(){
         return reservationRepository.findAll();
+    }
+
+    public  void deleteReservation(Long id){
+        if (!reservationRepository.existsById(id)){
+            throw new EntityNotFoundException("Reservation not found with id: " + id);
+        }
+        reservationRepository.deleteById(id);
     }
 }
