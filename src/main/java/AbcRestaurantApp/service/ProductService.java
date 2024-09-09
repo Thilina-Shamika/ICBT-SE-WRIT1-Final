@@ -3,6 +3,7 @@ package AbcRestaurantApp.service;
 import AbcRestaurantApp.entity.Products;
 import AbcRestaurantApp.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,9 +21,14 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    private final Path root = Paths.get("uploads");
+    @Value("${file.upload-dir}")
+    private String uploadDir;
 
-    public ProductService() {
+    private Path root;
+
+    @Autowired
+    public void init() {
+        this.root = Paths.get(uploadDir);
         try {
             Files.createDirectories(root);
         } catch (IOException e) {
@@ -30,26 +36,16 @@ public class ProductService {
         }
     }
 
-    public Products postProductWithImage(Products product, MultipartFile image) throws IOException {
-        String filename = UUID.randomUUID().toString() + "_" + image.getOriginalFilename();
-        Files.copy(image.getInputStream(), this.root.resolve(filename));
-
-        product.setImageName(filename);
+    public Products postProduct(Products product) {
         return productRepository.save(product);
     }
 
     public List<Products> getAllProducts() {
-        List<Products> products = productRepository.findAll();
-        products.forEach(product -> product.getImageUrl()); // This will populate the imageUrl
-        return products;
+        return productRepository.findAll();
     }
 
     public Products getProductById(Long id) {
-        Optional<Products> product = productRepository.findById(id);
-        return product.map(p -> {
-            p.getImageUrl(); // This will populate the imageUrl
-            return p;
-        }).orElse(null);
+        return productRepository.findById(id).orElse(null);
     }
 
     public void deleteProduct(Long id) {
@@ -79,7 +75,7 @@ public class ProductService {
             existingProduct.setDescription(updatedProduct.getDescription());
             existingProduct.setPrice(updatedProduct.getPrice());
             // Note: We're not updating the image here. If you want to update the image,
-            // you'll need to modify this method to accept a MultipartFile
+            // you'll need to use the updateProductWithImage method
             return productRepository.save(existingProduct);
         }
         return null;
