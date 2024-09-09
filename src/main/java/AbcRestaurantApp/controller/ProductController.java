@@ -35,7 +35,7 @@ public class ProductController {
             Products savedProduct = productService.postProductWithImage(product, image);
             return ResponseEntity.ok(savedProduct);
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.internalServerError().build();
         }
     }
 
