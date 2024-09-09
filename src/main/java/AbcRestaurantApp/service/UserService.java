@@ -1,9 +1,11 @@
 package AbcRestaurantApp.service;
 
+import AbcRestaurantApp.common.UnauthorizeException;
 import AbcRestaurantApp.entity.User;
 import AbcRestaurantApp.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,17 @@ public class UserService {
 
     public User postUser(User user){
         return userRepository.save(user);
+    }
+
+    public User loginUser(User user) throws UnauthorizeException {
+        Optional<User> userOp = userRepository.findByEmail(user.getEmail());
+        if (!user.getEmail().equals(userOp.get().getEmail())) {
+            throw new UnauthorizeException("Invalid Creditials");
+        }
+        if (!user.getPassword().equals(userOp.get().getPassword())) {
+            throw new UnauthorizeException("Invalid Creditials");
+        }
+        return userOp.get();
     }
 
     public List<User> getAllUsers(){

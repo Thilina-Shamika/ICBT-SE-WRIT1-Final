@@ -1,5 +1,6 @@
 package AbcRestaurantApp.controller;
 
+import AbcRestaurantApp.common.UnauthorizeException;
 import AbcRestaurantApp.entity.User;
 import AbcRestaurantApp.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -23,6 +24,15 @@ public class UserController {
     @PostMapping("/user")
     public User postUser(@RequestBody User user){
         return userService.postUser(user);
+    }
+
+    @PostMapping("/user/login")
+    public User login(@RequestBody User user) {
+        try {
+            return userService.loginUser(user);
+        } catch (UnauthorizeException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @GetMapping ("/users")
