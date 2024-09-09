@@ -4,6 +4,7 @@ import AbcRestaurantApp.entity.ReservationSlot;
 import AbcRestaurantApp.repository.ReservationSlotRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -20,6 +21,7 @@ public class ReservationSlotService {
         ReservationSlot existingSlot = reservationSlotRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Reservation slot not found"));
 
+        existingSlot.setDate(reservationSlot.getDate());  // Update date
         existingSlot.setStartTime(reservationSlot.getStartTime());
         existingSlot.setEndTime(reservationSlot.getEndTime());
         existingSlot.setCapacity(reservationSlot.getCapacity());

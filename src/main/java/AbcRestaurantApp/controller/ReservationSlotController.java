@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/reservation-slots")
+@CrossOrigin("*")
 public class ReservationSlotController {
 
     @Autowired
