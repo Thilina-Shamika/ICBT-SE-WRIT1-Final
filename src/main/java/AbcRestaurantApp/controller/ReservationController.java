@@ -1,46 +1,42 @@
 package AbcRestaurantApp.controller;
 
-
 import AbcRestaurantApp.entity.Reservation;
 import AbcRestaurantApp.service.ReservationService;
-import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.LongSummaryStatistics;
 
 @RestController
-@RequestMapping("/api")
-@RequiredArgsConstructor
-@CrossOrigin("*")
+@RequestMapping("/api/reservations")
 public class ReservationController {
 
     @Autowired
     private ReservationService reservationService;
 
-    @PostMapping("/reservation")
-    private Reservation postReservation(@RequestBody Reservation reservation){
-        return reservationService.postReservation(reservation);
+    @PostMapping
+    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
+        return ResponseEntity.ok(reservationService.createReservation(reservation));
     }
 
-    @GetMapping("/viewreservation")
-    public List<Reservation> getAllReservation(){
-        return reservationService.getAllReservations();
+    @PutMapping("/{id}/arrive")
+    public ResponseEntity<Reservation> markAsArrived(@PathVariable Long id) {
+        return ResponseEntity.ok(reservationService.markAsArrived(id));
     }
 
-    @DeleteMapping("/reservation/{id}")
-    public ResponseEntity<?> deleteReservation(@PathVariable Long id){
-        try {
-            reservationService.deleteReservation(id);
-            return new ResponseEntity<>("User with id: " +id+ "successfully deleted", HttpStatus.OK);
-        }
-        catch (EntityNotFoundException e){
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
-        }
+    @GetMapping
+    public ResponseEntity<List<Reservation>> getAllReservations() {
+        return ResponseEntity.ok(reservationService.getAllReservations());
+    }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Reservation> getReservationById(@PathVariable Long id) {
+        return ResponseEntity.ok(reservationService.getReservationById(id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+        reservationService.deleteReservation(id);
+        return ResponseEntity.noContent().build();
     }
 }
