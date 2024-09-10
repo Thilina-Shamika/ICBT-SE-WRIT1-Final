@@ -17,5 +17,5 @@ public class ReservationSlot {
     private LocalTime startTime;
     private LocalTime endTime;
     private int capacity;
-    private boolean available;
+    private boolean available = true;
 }
